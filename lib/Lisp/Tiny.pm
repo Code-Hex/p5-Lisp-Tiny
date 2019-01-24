@@ -1,11 +1,22 @@
 package Lisp::Tiny;
-use 5.008001;
+
 use strict;
 use warnings;
+use Lisp::Tiny::Parser;
 
 our $VERSION = "0.01";
 
+sub new {
+    my $class = shift;
+    return bless +{
+        parser => Lisp::Tiny::Parser->new,
+    };
+}
 
+sub parse {
+    my ($self, $syntax) = @_;
+    return $self->{parser}->parse($syntax);
+}
 
 1;
 __END__
