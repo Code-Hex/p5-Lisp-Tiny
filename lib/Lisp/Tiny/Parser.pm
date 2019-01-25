@@ -75,6 +75,7 @@ sub _parse_atomic_symbol {
     return $tmp if defined($tmp = $self->_parse_numeric());
     return $tmp if defined($tmp = $self->_parse_string());
     return $tmp if defined($tmp = $self->_parse_ident());
+    return $tmp if defined($tmp = $self->_parse_perl_code());
     return;
 }
 
@@ -99,6 +100,13 @@ sub _parse_ident {
         return $1;
     }
     if (/\G([a-zA-Z][0-9a-zA-Z-]*)(?:\s+)?/mgc) {
+        return $1;
+    }
+    return;
+}
+
+sub _parse_perl_code {
+    if (/\G\{(.*)\}/mgc) {
         return $1;
     }
     return;

@@ -95,6 +95,12 @@ sub eval {
         return $self->{global}{$var};
     }
 
+    # perl
+    if ($exp->[0] =~ /perl/) { # (perl (perl code...))
+        my $perl = $exp->[1];
+        return eval "$perl";
+    }
+
     # builtin
     if (my $fn = $builtin->{$exp->[0]}) {
         my @args;
