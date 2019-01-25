@@ -88,8 +88,8 @@ sub eval {
         return $val;
     }
 
-    # define
-    if ($exp->[0] =~ /define/) { # (define var exp)
+    # defvar
+    if ($exp->[0] =~ /defvar/) { # (defvar var exp)
         my $var = $exp->[1];
         $self->{global}{$var} = $self->eval($exp->[2]);
         return $self->{global}{$var};
