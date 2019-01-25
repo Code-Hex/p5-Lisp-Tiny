@@ -3,6 +3,9 @@ package Lisp::Tiny::Parser;
 use strict;
 use warnings;
 use feature qw/say/;
+use Lisp::Tiny::String;
+use Lisp::Tiny::Number;
+use Data::Dumper;
 
 sub new {
     my $class = shift;
@@ -54,12 +57,10 @@ sub _parse_list {
     if (/\G\(/mgc) {
         my $tmp;
         return unless defined($tmp = $self->_parse_s_expr());
-        push @$ret, $tmp;
-
-        while (defined(my $tmp = $self->_parse_s_expr())) {
+        do {
             /(?:\s*)/mgc; # skip spaces
             push @$ret, $tmp;
-        }
+        } while (defined($tmp = $self->_parse_s_expr()));
 
         return unless /\G\)/mgc;
         return $ret;
@@ -71,7 +72,7 @@ sub _parse_atomic_symbol {
     my $self = shift;
 
     my $tmp;
-    return $tmp + 0 if defined($tmp = $self->_parse_numeric());
+    return $tmp if defined($tmp = $self->_parse_numeric());
     return $tmp if defined($tmp = $self->_parse_string());
     return $tmp if defined($tmp = $self->_parse_ident());
     return;
@@ -80,7 +81,7 @@ sub _parse_atomic_symbol {
 sub _parse_numeric {
     my $self = shift;
     if (/\G([1-9][0-9]*|[0-9])/mgc) {
-        return $1;
+        return Lisp::Tiny::Number->new($1 + 0);
     }
     return;
 }
@@ -88,7 +89,7 @@ sub _parse_numeric {
 sub _parse_string {
     my $self = shift;
     if (/\G("(?:[^"\\]|\\.| )*"|'(?:[^'\\]|\\.| )*')/mgc) {
-        return $1;
+        return Lisp::Tiny::String->new($1);
     }
     return;
 }
@@ -100,7 +101,6 @@ sub _parse_ident {
     if (/\G([a-zA-Z][0-9a-zA-Z-]*)(?:\s+)?/mgc) {
         return $1;
     }
-    #/(?:\s*)?/mgc; # skip spaces
     return;
 }
 

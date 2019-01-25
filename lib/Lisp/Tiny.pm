@@ -3,19 +3,24 @@ package Lisp::Tiny;
 use strict;
 use warnings;
 use Lisp::Tiny::Parser;
+use Lisp::Tiny::VM;
 
 our $VERSION = "0.01";
 
 sub new {
     my $class = shift;
-    return bless +{
-        parser => Lisp::Tiny::Parser->new,
-    };
+    return bless +{}, $class;
 }
 
 sub parse {
     my ($self, $syntax) = @_;
-    return $self->{parser}->parse($syntax);
+    my $stack = Lisp::Tiny::Parser->new->parse($syntax);
+    return $stack;
+}
+
+sub eval {
+    my ($self, $stack) = @_;
+    return Lisp::Tiny::VM->new->eval($stack);
 }
 
 1;
