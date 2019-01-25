@@ -14,11 +14,7 @@ use Term::ReadLine;
 =pod
 s_expression = atomic_symbol | "(" s_expression "."s_expression ")" | list 
 list = "(" s_expression { s_expression } ")"
-atomic_symbol = letter atom_part
-atom_part = empty | letter atom_part | number atom_part
-letter = "a" ... "z"
-number = "1" ... "9"
-empty = " "
+atomic_symbol = space | identifier | string | numeric
 =cut
 
 my $term = Term::ReadLine->new('Tiny lisp interpreter');
